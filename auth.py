@@ -13,8 +13,8 @@ from database import get_db
 import models
 
 # TODO: JWT 서명에 사용할 SECRET_KEY와 ALGORITHM(HS256)을 설정하세요
-SECRET_KEY = ""
-ALGORITHM = ""
+SECRET_KEY = "oz_be_16"
+ALGORITHM = "HS256"
 
 # 비밀번호 암호화 컨텍스트 (argon2 알고리즘 사용)
 pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
@@ -29,10 +29,13 @@ async def get_current_user(
     """토큰 해독 후 현재 로그인한 유저 정보를 반환하는 의존성 함수"""
     try:
         # TODO: jwt.decode를 사용하여 토큰을 해독하고 유저네임(sub)을 추출하세요
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        username: str = payload.get("sub")
         # TODO: DB에서 해당 유저를 조회(select)하여 변수 user에 저장하세요
-
+        result = await db.execute(select(models.User).where(models.User.username == username))
         # 유저가 존재하지 않을 경우 401 에러 발생
-        user = None # 수정하세요
+        user = result.scalar_one_or_none() # 수정하세요
+        
         if not user:
             raise HTTPException(status_code=401, detail="인증 실패")
 

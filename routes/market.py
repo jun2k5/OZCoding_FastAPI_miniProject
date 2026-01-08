@@ -17,14 +17,20 @@ class ConnectionManager:
 
     async def connect(self, ws: WebSocket):
         # TODO: 웹소켓 연결을 수락(accept)하고 리스트에 추가하세요
+        await ws.accept()
+        self.active_connections.append(ws)
         pass
 
     def disconnect(self, ws: WebSocket):
         # TODO: 리스트에서 웹소켓 연결을 제거하세요
+        if ws in self.active_connections:
+            self.active_connections.remove(ws)
         pass
 
     async def broadcast(self, msg: dict):
         # TODO: 연결된 모든 클라이언트에게 JSON 형식의 메시지를 전송하세요
+        for conn in self.active_connections:
+            await conn.send_json(msg)
         pass
 
 
@@ -51,5 +57,15 @@ async def price_generator():
 async def websocket_endpoint(ws: WebSocket):
     """웹소켓 엔드포인트"""
     # TODO: manager를 통해 클라이언트를 연결하세요
+    await manager.connect(ws)
     # TODO: 클라이언트가 연결을 끊을 때까지 대기하고, 종료 시 disconnect 처리하세요
-    pass
+    try:
+        while True:
+            data = await ws.receive_json()
+            
+
+    except WebSocketDisconnect:
+        manager.disconnect(ws)
+
+
+

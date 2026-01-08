@@ -13,9 +13,9 @@ class User(Base):
     
     # TODO: id, username(아이디), password(암호화된 비번), balance(잔액, float) 필드를 정의하세요
     id = Column(Integer, primary_key=True)
-    username = Column()
-    password = Column()
-    balance = Column()
+    username = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    balance = Column(Float, default=0)
 
 
 class Portfolio(Base):
@@ -23,4 +23,27 @@ class Portfolio(Base):
     __tablename__ = "portfolios"
 
     # TODO: id, username(소유자 아이디), symbol(종목코드), amount(보유수량), avg_price(매수평단가) 필드를 정의하세요
-    pass
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, nullable=False)
+    symbol = Column(Integer, nullable=False)
+    amount = Column(Float, default=0.0)
+    avg_price = Column(Float, default=0.0)
+
+
+
+# ====================================
+
+
+
+# git remote add origin https://github.com/jun2k5/OZCoding_FastAPI_miniProject.git
+# git branch -M main
+# git push -u origin main
+
+
+# git remote -v
+
+
+
+
+
+
